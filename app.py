@@ -5,12 +5,21 @@
 #
 
 import wx
+import json
 from pkg import NewExam, choose_exam
+
+def read_settings():
+    settings_file = open("data/settings.json")
+    settings_json = json.load(settings_file)
+    settings = settings_json["settings"][0]
+    uni_name, school_name, number_of_questions = settings["schoolName"], settings["depName"], settings["numberOfQuestions"]
+    return uni_name, school_name, number_of_questions
 
 
 class MainFrame(wx.Frame):
     def __init__(self, *args, **kwds):
         # begin wxGlade: mainFrame.__init__
+        uni_name, school_name, number_of_questions = read_settings()
         kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
         self.SetSize((400, 300))
@@ -23,13 +32,13 @@ class MainFrame(wx.Frame):
         sizer_3 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(sizer_3, 1, wx.EXPAND, 0)
 
-        uni_name = wx.StaticText(self.panel_1, wx.ID_ANY, "University Name")
+        uni_name = wx.StaticText(self.panel_1, wx.ID_ANY, uni_name)
         sizer_3.Add(uni_name, 0, wx.ALIGN_CENTER_HORIZONTAL, 0)
 
-        school_name = wx.StaticText(self.panel_1, wx.ID_ANY, "School")
+        school_name = wx.StaticText(self.panel_1, wx.ID_ANY, school_name)
         sizer_3.Add(school_name, 0, wx.ALIGN_CENTER_HORIZONTAL, 0)
 
-        qnum = wx.StaticText(self.panel_1, wx.ID_ANY, "Number of Questions")
+        qnum = wx.StaticText(self.panel_1, wx.ID_ANY, str(number_of_questions))
         sizer_3.Add(qnum, 0, wx.ALIGN_CENTER_HORIZONTAL, 0)
 
         self.newBtn = wx.Button(self.panel_1, wx.ID_ANY, u"Yeni Sınav Oluştur")
@@ -55,6 +64,8 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.newExam, self.newBtn)
         self.Bind(wx.EVT_BUTTON, self.chooseExam, self.openBtn)
         self.closeBtn.Bind(wx.EVT_BUTTON, self.onQuit)
+
+
         # end wxGlade
 
     def onQuit(self, event):

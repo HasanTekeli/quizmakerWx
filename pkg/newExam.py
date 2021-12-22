@@ -1,5 +1,4 @@
 import os.path
-
 import wx
 import sys
 import pathlib
@@ -7,7 +6,6 @@ import json
 
 
 def get_datadir() -> pathlib.Path:
-
     """
     Returns a parent directory path
     where persistent application data can be stored.
@@ -29,7 +27,7 @@ def get_datadir() -> pathlib.Path:
 
 class NewExam(wx.Frame):
     def __init__(self, *args, **kwds):
-        # begin wxGlade: newExam.__init__
+        # begin wxGlade: NewExam.__init__
         kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
         self.SetSize((400, 300))
@@ -111,4 +109,4 @@ class NewExam(wx.Frame):
             with open(os.path.join(datadir, exam_filename), "w") as outfile:
                 outfile.write(exam_json)
 
-# end of class newExam
+# end of class NewExam
