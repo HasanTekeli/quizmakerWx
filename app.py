@@ -8,6 +8,7 @@ import wx
 import json
 from pkg import NewExam, choose_exam
 
+
 def read_settings():
     settings_file = open("data/settings.json")
     settings_json = json.load(settings_file)
@@ -73,11 +74,13 @@ class MainFrame(wx.Frame):
 
     def newExam(self, event):  # wxGlade: mainFrame.<event_handler>
         new = NewExam(None, wx.ID_ANY, "")
-        # self.Hide()
         new.Show()
 
     def chooseExam(self, event):  # wxGlade: mainFrame.<event_handler>
         choose_exam(self)
+
+    def qWizard(self, event):
+        pass
 
 # end of class mainFrame
 
