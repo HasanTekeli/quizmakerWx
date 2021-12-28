@@ -1,5 +1,5 @@
 import wx
-import wx.lib.scrolledpanel
+import wx.lib.scrolledpanel as scrolled
 from .file_io import read_file, write_file
 
 
@@ -11,7 +11,12 @@ class QuestionEntry(wx.Frame):
         self.SetSize((500, screen_height))
         self.SetTitle("frame_2")
 
-        self.panel_1 = wx.Panel(self, wx.ID_ANY)
+        self.panel = wx.Panel(self, wx.ID_ANY)
+        self.scrolled_panel = scrolled.ScrolledPanel(self.panel, -1,
+                                              style=wx.TAB_TRAVERSAL | wx.SUNKEN_BORDER,
+                                              name="panel1")
+        self.scrolled_panel.SetAutoLayout(1)
+        self.scrolled_panel.SetupScrolling()
 
         self.exam_info = exam
         self.file = file
@@ -20,62 +25,59 @@ class QuestionEntry(wx.Frame):
         year, semester, ydl, exam_type = self.exam_info["year"], self.exam_info["semester"], self.exam_info["ydl"], self.exam_info["exam"]
         questions = self.exam_info["questions"]
 
-        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+        # TopSizer
+        top_sizer = wx.GridSizer(1, 2, 0, 0)
+        year_sem = wx.StaticText(self.panel, wx.ID_ANY, str(year) + " " + str(semester))
+        exam_name = wx.StaticText(self.panel, wx.ID_ANY, "YDL" + str(ydl) + " "  + str(exam_type))
+        top_sizer.Add(year_sem, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        top_sizer.Add(exam_name, 0, wx.ALIGN_CENTER_VERTICAL, 0)
 
-        grid_sizer_1 = wx.GridSizer(8, 2, 0, 0)
-        sizer_1.Add(grid_sizer_1, 1, wx.EXPAND, 0)
+        scrollable_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        year_sem = wx.StaticText(self.panel_1, wx.ID_ANY, str(year) + " " + str(semester))
-        grid_sizer_1.Add(year_sem, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        q_lbl = wx.StaticText(self.panel, wx.ID_ANY, "Soru:")
+        self.q_input = wx.TextCtrl(self.panel, wx.ID_ANY, "", style=wx.TE_MULTILINE)
+        ca_lbl = wx.StaticText(self.panel, wx.ID_ANY, u"Doğru Cevap:")
+        self.ca_input = wx.TextCtrl(self.panel, wx.ID_ANY, "")
+        wa1_lbl = wx.StaticText(self.panel, wx.ID_ANY, u"Yanlış Cevap 1:")
+        self.wa1_input = wx.TextCtrl(self.panel, wx.ID_ANY, "")
+        wa2_lbl = wx.StaticText(self.panel, wx.ID_ANY, u"Yanlış Cevap 2:")
+        self.wa2_input = wx.TextCtrl(self.panel, wx.ID_ANY, "")
+        wa3_lbl = wx.StaticText(self.panel, wx.ID_ANY, u"Yanlış Cevap 3:")
+        self.wa3_input = wx.TextCtrl(self.panel, wx.ID_ANY, "")
 
-        exam_name = wx.StaticText(self.panel_1, wx.ID_ANY, "YDL" + str(ydl) + " "  + str(exam_type))
-        grid_sizer_1.Add(exam_name, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        scrollable_sizer.Add(q_lbl, 0, 0, 0)
+        scrollable_sizer.Add(self.q_input, 0, wx.EXPAND, 0)
+        scrollable_sizer.Add(ca_lbl, 0, 0, 0)
+        scrollable_sizer.Add(self.ca_input, 0, wx.EXPAND, 0)
+        scrollable_sizer.Add(wa1_lbl, 0, 0, 0)
+        scrollable_sizer.Add(self.wa1_input, 0, wx.EXPAND, 0)
+        scrollable_sizer.Add(wa2_lbl, 0, 0, 0)
+        scrollable_sizer.Add(self.wa2_input, 0, wx.EXPAND, 0)
+        scrollable_sizer.Add(wa3_lbl, 0, 0, 0)
+        scrollable_sizer.Add(self.wa3_input, 0, wx.EXPAND, 0)
 
-        q_lbl = wx.StaticText(self.panel_1, wx.ID_ANY, "Soru:")
-        grid_sizer_1.Add(q_lbl, 0, 0, 0)
+        bottom_sizer = wx.GridSizer(2, 2, 0, 0)
 
-        self.q_input = wx.TextCtrl(self.panel_1, wx.ID_ANY, "", style=wx.TE_MULTILINE)
-        grid_sizer_1.Add(self.q_input, 0, wx.EXPAND, 0)
-
-        ca_lbl = wx.StaticText(self.panel_1, wx.ID_ANY, u"Doğru Cevap:")
-        grid_sizer_1.Add(ca_lbl, 0, 0, 0)
-
-        self.ca_input = wx.TextCtrl(self.panel_1, wx.ID_ANY, "")
-        grid_sizer_1.Add(self.ca_input, 0, wx.EXPAND, 0)
-
-        wa1_lbl = wx.StaticText(self.panel_1, wx.ID_ANY, u"Yanlış Cevap 1:")
-        grid_sizer_1.Add(wa1_lbl, 0, 0, 0)
-
-        self.wa1_input = wx.TextCtrl(self.panel_1, wx.ID_ANY, "")
-        grid_sizer_1.Add(self.wa1_input, 0, wx.EXPAND, 0)
-
-        wa2_lbl = wx.StaticText(self.panel_1, wx.ID_ANY, u"Yanlış Cevap 2:")
-        grid_sizer_1.Add(wa2_lbl, 0, 0, 0)
-
-        self.wa2_input = wx.TextCtrl(self.panel_1, wx.ID_ANY, "")
-        grid_sizer_1.Add(self.wa2_input, 0, wx.EXPAND, 0)
-
-        wa3_lbl = wx.StaticText(self.panel_1, wx.ID_ANY, u"Yanlış Cevap 3:")
-        grid_sizer_1.Add(wa3_lbl, 0, 0, 0)
-
-        self.wa3_input = wx.TextCtrl(self.panel_1, wx.ID_ANY, "")
-        grid_sizer_1.Add(self.wa3_input, 0, wx.EXPAND, 0)
-
-        qnum_lbl = wx.StaticText(self.panel_1, wx.ID_ANY, u"Soru sayısı:")
-        grid_sizer_1.Add(qnum_lbl, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
-
-        qnum_info = wx.StaticText(self.panel_1, wx.ID_ANY, "1/25")
-        grid_sizer_1.Add(qnum_info, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-
-        self.q_input_exit = wx.Button(self.panel_1, wx.ID_ANY, u"Kaydetmeden Çık")
-        grid_sizer_1.Add(self.q_input_exit, 0, wx.EXPAND, 0)
-
-        self.save_question = wx.Button(self.panel_1, wx.ID_ANY, u"Kaydet ve İlerle")
-        grid_sizer_1.Add(self.save_question, 0, wx.EXPAND, 0)
+        qnum_lbl = wx.StaticText(self.panel, wx.ID_ANY, u"Soru sayısı:")
+        qnum_info = wx.StaticText(self.panel, wx.ID_ANY, "1/25")
+        self.q_input_exit = wx.Button(self.panel, wx.ID_ANY, u"Kaydetmeden Çık")
+        self.save_question = wx.Button(self.panel, wx.ID_ANY, u"Kaydet ve İlerle")
         self.Bind(wx.EVT_BUTTON, self.onNextPage, self.save_question)
 
-        self.panel_1.SetSizer(sizer_1)
+        bottom_sizer.Add(qnum_lbl, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
+        bottom_sizer.Add(qnum_info, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        bottom_sizer.Add(self.q_input_exit, 0, wx.EXPAND, 0)
+        bottom_sizer.Add(self.save_question, 0, wx.EXPAND, 0)
 
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        main_sizer.Add(top_sizer)
+        main_sizer.Add(scrollable_sizer, 1, wx.EXPAND)
+        main_sizer.Add(bottom_sizer)
+
+        self.panel.SetSizer(main_sizer)
+
+        self.scrolled_panel.Layout()
+        self.scrolled_panel.SetupScrolling()
         self.Layout()
         self.on_load(questions)
         # end wxGlade
